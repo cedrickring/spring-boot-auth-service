@@ -14,4 +14,4 @@ JWT Token required in `Authorization` Header:
 | Route | Method | Request Body | Response |
 |-------|--------|--------------|------------|
 | /user | GET    | -            | <code>{ "username": "test", "fullName": "Test User", "emailAddress": "some@email.com" }</code> |
-| /user/changepassword | POST | { "oldPassword": "supersafepassword", "newPassword": "supersafepassword2" } | { "success": "true" } |
+| /user/changepassword | POST | <code>{ "oldPassword": "supersafepassword", "newPassword": "supersafepassword2" }</code> | <code>{ "success": "true" }</code> |
