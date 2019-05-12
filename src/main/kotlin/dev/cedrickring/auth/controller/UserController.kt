@@ -57,8 +57,8 @@ class UserController {
     }
 
     private fun getCurrentUser(): User? {
-        val principal = SecurityContextHolder.getContext().authentication.principal as UserDetails
-        return userService.findUser(principal.username)
+        val principal = SecurityContextHolder.getContext().authentication.principal as String
+        return userService.findUser(principal)
     }
 
 }
