@@ -2,26 +2,25 @@ package dev.cedrickring.auth.config
 
 import dev.cedrickring.auth.jwt.JWTAuthenticationFilter
 import dev.cedrickring.auth.jwt.JWTAuthorizationFilter
-import dev.cedrickring.auth.service.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.security.PrivateKey
 
 @EnableWebSecurity
-class WebSecurityConfig: WebSecurityConfigurerAdapter() {
+class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var signingKey: PrivateKey
 
     @Autowired
-    lateinit var userDetailsService: UserDetailsServiceImpl
+    lateinit var userDetailsService: UserDetailsService
 
     @Autowired
     lateinit var passwordEncoder: BCryptPasswordEncoder
@@ -32,7 +31,7 @@ class WebSecurityConfig: WebSecurityConfigurerAdapter() {
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(JWTAuthenticationFilter(authenticationManager(), signingKey))
-                .addFilter(JWTAuthorizationFilter(authenticationManager(), signingKey))
+                .addFilter(JWTAuthorizationFilter(authenticationManager(), userDetailsService, signingKey))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 

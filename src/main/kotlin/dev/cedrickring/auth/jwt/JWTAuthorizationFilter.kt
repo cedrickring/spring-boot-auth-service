@@ -7,13 +7,14 @@ import io.jsonwebtoken.SignatureException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import java.security.PrivateKey
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class JWTAuthorizationFilter(authManager: AuthenticationManager, private val signingKey: PrivateKey) : BasicAuthenticationFilter(authManager) {
+class JWTAuthorizationFilter(authManager: AuthenticationManager, private val userDetailsService: UserDetailsService, private val signingKey: PrivateKey) : BasicAuthenticationFilter(authManager) {
 
     private val log = loggerFor<JWTAuthorizationFilter>()
 
@@ -45,7 +46,8 @@ class JWTAuthorizationFilter(authManager: AuthenticationManager, private val sig
 
             if (username != null) {
                 log.info("Authorized user $username with token $token")
-                return UsernamePasswordAuthenticationToken(username, null, mutableListOf())
+                val user = userDetailsService.loadUserByUsername(username)
+                return UsernamePasswordAuthenticationToken(user, user.password, mutableListOf())
             }
         } catch (e: SignatureException) {
             log.error("Couldn't authorize token $token", e)

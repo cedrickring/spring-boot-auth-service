@@ -4,7 +4,6 @@ import dev.cedrickring.auth.loggerFor
 import dev.cedrickring.auth.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
@@ -17,7 +16,7 @@ class UserDetailsServiceImpl : UserDetailsService {
     @Autowired
     lateinit var userRepository: UserRepository
 
-    override fun loadUserByUsername(username: String): UserDetails {
+    override fun loadUserByUsername(username: String): User {
         val foundUsers = userRepository.findUserByUsername(username)
 
         if (foundUsers.isEmpty()) {
